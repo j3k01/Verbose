@@ -5,6 +5,7 @@ import numpy as np
 from MediapipeHandler import MediapipeHandler
 from ModelHandler import ModelHandler
 from DataHandler import DataHandler
+from VoiceHandler import VoiceHandler
 from pathlib import Path
 from PIL import Image, ImageTk
 import tkinter as Tk
@@ -93,30 +94,42 @@ def process_frames():
                 if max_index < len(actions):
                     language = 'en'
                     print(f"Detected sign: {actions[max_index]} with accuracy: {res[max_index]}")
-                    if actions[max_index] == 'hello2' and keyboard.is_pressed('ctrl'):
-                        text = "hello"
-                        output = gTTS(text=text, lang=language, slow=False)
-                        output.save("hello.mp3")
-                        os.system("start hello.mp3")
-                        time.sleep(5)
+                    if actions[max_index] == 'nice' and keyboard.is_pressed('ctrl'):
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
+                    elif actions[max_index] == 'meet' and keyboard.is_pressed('ctrl'):
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
+                    elif actions[max_index] == 'you' and keyboard.is_pressed('ctrl'):
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
+                    elif actions[max_index] == 'hello2' and keyboard.is_pressed('ctrl'):
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
                     elif actions[max_index] == 'no2' and keyboard.is_pressed('ctrl'):
-                        text = "no"
-                        output = gTTS(text=text, lang=language, slow=False)
-                        output.save("no.mp3")
-                        os.system("start no.mp3")
-                        time.sleep(5)
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
                     elif actions[max_index] == 'yes2' and keyboard.is_pressed('ctrl'):
-                        text = "yes"
-                        output = gTTS(text=text, lang=language, slow=False)
-                        output.save("yes.mp3")
-                        os.system("start yes.mp3")
-                        time.sleep(5)
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
                     elif actions[max_index] == 'thanks2' and keyboard.is_pressed('ctrl'):
-                        text = "thanks"
-                        output = gTTS(text=text, lang=language, slow=False)
-                        output.save("thanks.mp3")
-                        os.system("start thanks.mp3")
-                        time.sleep(5)
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
+                    elif actions[max_index] == 'ok2' and keyboard.is_pressed('ctrl'):
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
+                    elif actions[max_index] == 'iloveyou2' and keyboard.is_pressed('ctrl'):
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
+                    elif actions[max_index] == 'have' and keyboard.is_pressed('ctrl'):
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
+                    elif actions[max_index] == 'day' and keyboard.is_pressed('ctrl'):
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
+                    elif actions[max_index] == 'help' and keyboard.is_pressed('ctrl'):
+                        voice_handler = VoiceHandler(actions[max_index])
+                        voice_handler.play_sound()
 
 
 
