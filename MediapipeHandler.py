@@ -42,9 +42,6 @@ class MediapipeHandler:
         landmark_drawing_spec_hand = self.mp_drawing.DrawingSpec(color=(0, 255, 255), thickness=2, circle_radius=2)
         connection_drawing_spec_hand = self.mp_drawing.DrawingSpec(color=(255, 255, 255), thickness=1, circle_radius=1)
 
-        #self.mp_drawing.draw_landmarks(image, results.face_landmarks, self.mp_holistic.FACEMESH_TESSELATION,
-         #                         landmark_drawing_spec=landmark_drawing_spec,
-          #                        connection_drawing_spec=connection_drawing_spec)
         self.mp_drawing.draw_landmarks(image, results.pose_landmarks, self.mp_holistic.POSE_CONNECTIONS,
                                   landmark_drawing_spec=landmark_drawing_spec,
                                   connection_drawing_spec=connection_drawing_spec)

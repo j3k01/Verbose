@@ -16,7 +16,7 @@ from sklearn.metrics import multilabel_confusion_matrix, accuracy_score
 from scipy import stats
 from gtts import gTTS
 
-sign_array = np.array(['nice','meet','you','hello2','no2','yes2','thanks2','ok2','iloveyou2','have','day','help'])
+sign_array = np.array(['nice','meet','hello2','no2','yes2','thanks2','ok2','iloveyou2','have','day','help'])
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\dell\Desktop\studia\inzynierka\gui2\build\assets\frame0")
@@ -39,7 +39,7 @@ def show_author_info():
         show_author_info.author_info_window.title("Author Information")
         show_author_info.author_info_window.resizable(False, False)
         show_author_info.author_info_window.geometry("300x100")
-        author_info_label = Label(show_author_info.author_info_window, text="Author: Jakub Kostka\nContact: golomp pocztowy")
+        author_info_label = Label(show_author_info.author_info_window, text="Author: Jakub Kostka\nContact: jakub.kostka01@gmail.com")
         author_info_label.pack(padx=20, pady=20)
 
         show_author_info.author_info_window.protocol("WM_DELETE_WINDOW", close_author_info_window)
@@ -74,6 +74,7 @@ def stop_opencv_processing():
     opencv_processing = False
 
 def process_frames():
+    global current_sign
     ret, frame = cap.read()
 
     if opencv_processing:
@@ -89,7 +90,7 @@ def process_frames():
         if len(ModelHandler.sequence) == 30:
             res = ModelHandler.predict_sequence(ModelHandler.sequence)
 
-            if np.max(res) > 0.60:
+            if np.max(res) > 0.50:
                 max_index = np.argmax(res)
                 if max_index < len(actions):
                     language = 'en'
@@ -155,68 +156,68 @@ def prob_viz(res, actions, input_frame, colors):
 
     return output_frame
 
-def process_frames2():
-    model.load_weights('actionNewAll.h5')
-    yhat = model.predict(sequence)
-    ytrue = np.argmax(y_test, axis=1).tolist()
-    yhat = np.argmax(yhat, axis=1).tolist()
-    multilabel_confusion_matrix(ytrue, yhat)
-    accuracy_score(ytrue, yhat)
-    colors = [(245, 117, 16), (117, 245, 16), (16, 117, 245)]
-    sequence = []
-    sentence = []
-    predictions = []
-    threshold = 0.5
-
-    cap = cv.VideoCapture(0)
-    # Set mediapipe model
-    with mediapipe_handler.Holistic(min_detection_confidence=0.7, min_tracking_confidence=0.7) as holistic:
-        while cap.isOpened():
-
-            ret, frame = cap.read()
-
-            image, results = mediapipe_detection(frame, holistic)
-            print(results)
-
-            draw_styled_landmarks(image, results)
-
-            keypoints = extract_keypoints(results)
-            sequence.append(keypoints)
-            sequence = sequence[-30:]
-
-            if len(sequence) == 30:
-                res = model.predict(np.expand_dims(sequence, axis=0))[0]
-                print(actions[np.argmax(res)])
-                predictions.append(np.argmax(res))
-
-            # 3. Viz logic
-            if len(predictions) >= 10 and len(np.unique(predictions[-10:])) > 0 and np.unique(predictions[-10:])[0] == np.argmax(res):
-                if res[np.argmax(res)] > threshold:
-                    if len(sentence) > 0:
-                        if actions[np.argmax(res)] != sentence[-1]:
-                            sentence.append(actions[np.argmax(res)])
-                    else:
-                        sentence.append(actions[np.argmax(res)])
-
-                if len(sentence) > 5:
-                    sentence = sentence[-5:]
-
-                image = prob_viz(res, actions, image, colors)
-
-            cv.rectangle(image, (0, 0), (640, 40), (245, 117, 16), -1)
-            cv.putText(image, ' '.join(sentence), (3, 30),
-                       cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
-
-            cv.imshow('OpenCV Feed', image)
-
-            if cv.waitKey(10) & 0xFF == ord('q'):
-                break
-        cap.release()
-        cv.destroyAllWindows()
+# def process_frames2():
+#     model.load_weights('actionAllLRv4.h5')
+#     yhat = model.predict(sequence)
+#     ytrue = np.argmax(y_test, axis=1).tolist()
+#     yhat = np.argmax(yhat, axis=1).tolist()
+#     multilabel_confusion_matrix(ytrue, yhat)
+#     accuracy_score(ytrue, yhat)
+#     colors = [(245, 117, 16), (117, 245, 16), (16, 117, 245)]
+#     sequence = []
+#     sentence = []
+#     predictions = []
+#     threshold = 0.5
+#
+#     cap = cv.VideoCapture(0)
+#     # Set mediapipe model
+#     with mediapipe_handler.Holistic(min_detection_confidence=0.7, min_tracking_confidence=0.7) as holistic:
+#         while cap.isOpened():
+#
+#             ret, frame = cap.read()
+#
+#             image, results = mediapipe_detection(frame, holistic)
+#             print(results)
+#
+#             draw_styled_landmarks(image, results)
+#
+#             keypoints = extract_keypoints(results)
+#             sequence.append(keypoints)
+#             sequence = sequence[-30:]
+#
+#             if len(sequence) == 30:
+#                 res = model.predict(np.expand_dims(sequence, axis=0))[0]
+#                 print(actions[np.argmax(res)])
+#                 predictions.append(np.argmax(res))
+#
+#             # 3. Viz logic
+#             if len(predictions) >= 10 and len(np.unique(predictions[-10:])) > 0 and np.unique(predictions[-10:])[0] == np.argmax(res):
+#                 if res[np.argmax(res)] > threshold:
+#                     if len(sentence) > 0:
+#                         if actions[np.argmax(res)] != sentence[-1]:
+#                             sentence.append(actions[np.argmax(res)])
+#                     else:
+#                         sentence.append(actions[np.argmax(res)])
+#
+#                 if len(sentence) > 5:
+#                     sentence = sentence[-5:]
+#
+#                 image = prob_viz(res, actions, image, colors)
+#
+#             cv.rectangle(image, (0, 0), (640, 40), (245, 117, 16), -1)
+#             cv.putText(image, ' '.join(sentence), (3, 30),
+#                        cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
+#
+#             cv.imshow('OpenCV Feed', image)
+#
+#             if cv.waitKey(10) & 0xFF == ord('q'):
+#                 break
+#         cap.release()
+#         cv.destroyAllWindows()
 
 actions = sign_array
 MediapipeHandler = MediapipeHandler()
-ModelHandler = ModelHandler('C:\\Users\\dell\\Desktop\\studia\\inzynierka\\actionAll2312.h5', actions)
+ModelHandler = ModelHandler('C:\\Users\\dell\\Desktop\\studia\\inzynierka\\actionAllLRv4.h5', actions)
 colors = [(245, 117, 16), (117, 245, 16), (16, 117, 245)]
 
 
@@ -227,6 +228,7 @@ opencv_processing = False
 cap = cv.VideoCapture(0)
 
 window = Tk()
+window.title("Verbose")
 window.geometry("966x716")
 window.configure(bg="#FFFFFF")
 
@@ -323,7 +325,4 @@ button_4.place(
 )
 window.resizable(False, False)
 window.mainloop()
-
-
-
 
